@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0e17">
+<title>میزبان ۲۴ — اجرای ۲۴ ساعتهٔ فایل پایتون</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%23a78bfa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='28' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%230a0e17'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="brand">
+    <span class="logo"></span>
+    <div class="brand-text">
+      <h1>میزبان <b>۲۴</b></h1>
+      <p>ربات پایتونت را ۲۴ ساعته زنده نگه می‌داریم</p>
+    </div>
+  </div>
+  <div class="clock-box">
+    <span id="clock">--:--</span>
+    <small>به وقت تهران</small>
+  </div>
+</header>
+
+<main>
+  <section class="card hero">
+    <div class="sys">
+      <span class="pulse idle" id="sysDot"></span>
+      <div>
+        <div class="sys-title" id="sysTitle">در حال بررسی…</div>
+        <div class="sys-sub" id="sysSub">اتصال به موتور اجرا…</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stBots">۰</b><label>ربات</label></div>
+      <div class="stat"><b id="stUptime">—</b><label>آپتایم جاری</label></div>
+      <div class="stat"><b id="stUpdated">—</b><label>آخرین ضربان</label></div>
+    </div>
+  </section>
+
+  <section id="bots" class="grid"></section>
+
+  <div id="empty" class="card empty hidden">
+    <span class="big-ring"></span>
+    <b>هنوز رباتی مستقر نشده است</b>
+    <span>فایل <code>.py</code> خود را در چت بفرست تا همین‌جا زنده ببینیش</span>
+  </div>
+
+  <section class="card how">
+    <h2>چطور رباتم را ۲۴ ساعته اجرا کنم؟</h2>
+    <ol class="steps">
+      <li><div><b>فایل پایتون را در چت بفرست</b><span>همین‌جا که با دستیار حرف می‌زنی، فایل <code>.py</code> را بفرست یا متن کدش را بده.</span></div></li>
+      <li><div><b>استقرار خودکار</b><span>دستیار فایل را روی موتور اجرا می‌گذارد و تا ۶۰ ثانیه بعد، ربات روشن می‌شود.</span></div></li>
+      <li><div><b>زنده‌ماندن همیشگی</b><span>موتور اجرا هر ~۵٫۷ ساعت چرخه را خودکار تمدید می‌کند؛ فاصلهٔ چرخه‌ها فقط چند ثانیه است.</span></div></li>
+      <li><div><b>کنترل از چت</b><span>برای توقف، اجرا، حذف یا تغییر ربات فقط در چت بگو؛ توقف واقعی است و پروسه همان لحظه بسته می‌شود.</span></div></li>
+    </ol>
+    <div class="alt">
+      <button id="tokenToggle" class="btn ghost">روش حرفه‌ای: مدیریت مستقیم با توکن گیت‌هاب</button>
+    </div>
+  </section>
+
+  <section id="tokenPanel" class="card hidden">
+    <h2>مدیریت مستقیم با توکن گیت‌هاب</h2>
+    <p class="muted">با یک توکن شخصی (Personal Access Token) می‌توانی از همین صفحه ربات آپلود، توقف، اجرا و حذف کنی. توکن فقط در مرورگر خودت ذخیره می‌شود و فقط به <code>api.github.com</code> فرستاده می‌شود.</p>
+    <p class="muted">ساخت توکن: <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Mizban24" target="_blank" rel="noopener">این لینک</a> را باز کن (باید به github.com لاگین باشی)، فقط دسترسی <code>repo</code> کافی است، توکن را بساز و همین‌جا بگذار.</p>
+    <div class="row">
+      <input id="tokenInput" type="password" placeholder="github_pat_… یا ghp_…" autocomplete="off">
+      <button id="tokenSave" class="btn">ذخیره</button>
+      <button id="tokenRemove" class="btn danger ghost">حذف توکن</button>
+    </div>
+    <div id="tokenState" class="muted small"></div>
+    <div id="adminBox" class="hidden">
+      <div class="admin-actions">
+        <button id="btnStart" class="btn">شروع همه</button>
+        <button id="btnStop" class="btn warn">توقف همه</button>
+      </div>
+      <label class="drop" id="drop">
+        <input type="file" id="fileInput" accept=".py" hidden>
+        <b>فایل .py را اینجا رها کن یا کلیک کن</b>
+        <span>حداکثر ۱ مگابایت — فقط پایتون</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="card facts">
+    <h2>حقایق مهم (شفاف و بدون تعارف)</h2>
+    <ul>
+      <li><b>وضعیت‌ها واقعی‌اند.</b> آنچه می‌بینی از ضربان خودِ ربات می‌آید؛ چیزی نمایشی یا فیک وجود ندارد.</li>
+      <li><b>رایگان و بی‌نهایت.</b> چون مخزن عمومی است، GitHub Actions برای مخازن عمومی رایگان و نامحدود است؛ نه هزینه‌ای هست و نه به دامنه یا API نیاز است.</li>
+      <li><b>لاگ‌ها عمومی‌اند.</b> مخزن عمومی است و لاگ را همه می‌توانند ببینند. هیچ رمز یا توکنی را در خروجی ربات چاپ نکن.</li>
+      <li><b>اگر ربات به رمز نیاز دارد:</b> در گیت‌هاب به <code>Settings → Secrets and variables → Actions</code> برو، رمز را اضافه کن و در کد با <code>os.environ["نام"]</code> بخوان.</li>
+      <li><b>منابع هر چرخه:</b> حداکثر ۲ هستهٔ CPU و ~۷ گیگابایت رم؛ هر چرخه تا ~۵٫۷ ساعت و بعد خودکار تمدید می‌شود.</li>
+      <li><b>وقفه‌های جزئی طبیعی است.</b> بین چرخه‌ها چند ثانیه و در فشار سنگین گاهی چند دقیقه تأخیر پیش می‌آید.</li>
+      <li><b>محیط ایزوله.</b> کد تو در ماشین مجازی یک‌بارمصرف گیت‌هاب اجرا می‌شود و بعد از هر چرخه پاک می‌شود؛ توقف هم واقعی است.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  ساخته‌شده روی زیرساخت رایگان GitHub Actions و Pages — <a id="repoLink" href="#" target="_blank" rel="noopener">مخزن پروژه</a>
+</footer>
+
+<div id="toasts"></div>
+<script src="assets/app.js"></script>
+</body>
+</html>
